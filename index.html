@@ -1,1 +1,494 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0b1020">
+<title>OrçaZap</title>
 
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background: #0b1020;
+    color: #fff;
+    min-height: 100vh;
+}
+
+header {
+    padding: 22px 18px;
+    background: linear-gradient(135deg, #111936, #18244b);
+    border-bottom: 1px solid #26345f;
+}
+
+.logo {
+    font-size: 27px;
+    font-weight: 800;
+}
+
+.logo span {
+    color: #25d366;
+}
+
+.subtitle {
+    margin-top: 6px;
+    color: #aeb8d4;
+    font-size: 14px;
+}
+
+.container {
+    width: 100%;
+    max-width: 650px;
+    margin: auto;
+    padding: 18px;
+}
+
+.card {
+    background: #121a31;
+    border: 1px solid #253158;
+    border-radius: 18px;
+    padding: 18px;
+    margin-bottom: 16px;
+    box-shadow: 0 8px 30px rgba(0,0,0,.18);
+}
+
+.card h2 {
+    font-size: 19px;
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    color: #aeb8d4;
+    font-size: 13px;
+    margin: 13px 0 7px;
+}
+
+input,
+textarea {
+    width: 100%;
+    padding: 14px;
+    border-radius: 12px;
+    border: 1px solid #34436e;
+    background: #0d1428;
+    color: white;
+    outline: none;
+    font-size: 15px;
+}
+
+textarea {
+    min-height: 90px;
+    resize: vertical;
+}
+
+input:focus,
+textarea:focus {
+    border-color: #25d366;
+}
+
+button {
+    width: 100%;
+    border: 0;
+    border-radius: 12px;
+    padding: 14px;
+    margin-top: 14px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background: #25d366;
+    color: #07130b;
+}
+
+.btn-secondary {
+    background: #26345f;
+    color: white;
+}
+
+.btn-whatsapp {
+    background: #25d366;
+    color: #07130b;
+}
+
+.btn-danger {
+    background: #3a1d2a;
+    color: #ff8da9;
+}
+
+.hero {
+    text-align: center;
+    padding: 10px 5px 20px;
+}
+
+.hero-icon {
+    font-size: 45px;
+    margin-bottom: 8px;
+}
+
+.hero h1 {
+    font-size: 24px;
+}
+
+.hero p {
+    color: #aeb8d4;
+    margin-top: 7px;
+    line-height: 1.5;
+}
+
+.preview {
+    background: #f8f9fc;
+    color: #111827;
+    border-radius: 14px;
+    padding: 20px;
+    margin-top: 15px;
+}
+
+.preview h3 {
+    font-size: 21px;
+    margin-bottom: 12px;
+}
+
+.preview-line {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 9px 0;
+    border-bottom: 1px solid #ddd;
+}
+
+.preview-total {
+    display: flex;
+    justify-content: space-between;
+    font-size: 21px;
+    font-weight: bold;
+    padding-top: 16px;
+}
+
+.empty {
+    text-align: center;
+    color: #7f8baa;
+    padding: 15px;
+    font-size: 14px;
+}
+
+.status {
+    text-align: center;
+    margin-top: 12px;
+    color: #25d366;
+    font-size: 14px;
+}
+
+.hidden {
+    display: none;
+}
+
+footer {
+    text-align: center;
+    color: #64708e;
+    font-size: 12px;
+    padding: 20px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">Orça<span>Zap</span></div>
+    <div class="subtitle">Orçamentos profissionais pelo celular</div>
+</header>
+
+<div class="container">
+
+    <section class="hero">
+        <div class="hero-icon">🧾</div>
+        <h1>Crie seu orçamento</h1>
+        <p>
+            Preencha os dados abaixo e gere um orçamento
+            pronto para enviar pelo WhatsApp.
+        </p>
+    </section>
+
+    <div class="card">
+        <h2>👤 Cliente</h2>
+
+        <label for="cliente">Nome do cliente</label>
+        <input id="cliente" type="text" placeholder="Ex.: João da Silva">
+
+        <label for="telefone">WhatsApp do cliente</label>
+        <input id="telefone" type="tel" placeholder="Ex.: 11999999999">
+    </div>
+
+    <div class="card">
+        <h2>🔧 Serviço</h2>
+
+        <label for="servico">Nome do serviço</label>
+        <input id="servico" type="text" placeholder="Ex.: Instalação elétrica">
+
+        <label for="descricao">Descrição</label>
+        <textarea id="descricao" placeholder="Descreva o serviço..."></textarea>
+
+        <label for="valor">Valor (R$)</label>
+        <input id="valor" type="number" step="0.01" placeholder="Ex.: 350">
+
+        <button class="btn-primary" onclick="gerarOrcamento()">
+            ✨ Gerar orçamento
+        </button>
+    </div>
+
+    <div id="resultado" class="card hidden">
+        <h2>📄 Seu orçamento</h2>
+
+        <div class="preview" id="preview"></div>
+
+        <button class="btn-whatsapp" onclick="enviarWhatsApp()">
+            💬 Enviar pelo WhatsApp
+        </button>
+
+        <button class="btn-secondary" onclick="salvarOrcamento()">
+            💾 Salvar orçamento
+        </button>
+
+        <div id="status" class="status"></div>
+    </div>
+
+    <div class="card">
+        <h2>📚 Orçamentos salvos</h2>
+        <div id="lista" class="empty">
+            Nenhum orçamento salvo ainda.
+        </div>
+    </div>
+
+</div>
+
+<footer>
+    OrçaZap • Seu orçamento, direto no WhatsApp.
+</footer>
+
+<script>
+
+let orçamentoAtual = null;
+
+function dinheiro(valor) {
+    return Number(valor || 0).toLocaleString("pt-BR", {
+        style: "currency",
+        currency: "BRL"
+    });
+}
+
+function gerarOrcamento() {
+
+    const cliente = document.getElementById("cliente").value.trim();
+    const telefone = document.getElementById("telefone").value.trim();
+    const servico = document.getElementById("servico").value.trim();
+    const descricao = document.getElementById("descricao").value.trim();
+    const valor = document.getElementById("valor").value;
+
+    if (!cliente) {
+        alert("Digite o nome do cliente.");
+        return;
+    }
+
+    if (!servico) {
+        alert("Digite o nome do serviço.");
+        return;
+    }
+
+    if (!valor || Number(valor) <= 0) {
+        alert("Digite um valor válido.");
+        return;
+    }
+
+    orçamentoAtual = {
+        cliente,
+        telefone,
+        servico,
+        descricao,
+        valor: Number(valor),
+        data: new Date().toLocaleDateString("pt-BR")
+    };
+
+    const preview = document.getElementById("preview");
+
+    preview.innerHTML = `
+        <h3>Orçamento</h3>
+
+        <div class="preview-line">
+            <strong>Cliente</strong>
+            <span>${escapar(cliente)}</span>
+        </div>
+
+        <div class="preview-line">
+            <strong>Serviço</strong>
+            <span>${escapar(servico)}</span>
+        </div>
+
+        <div class="preview-line">
+            <strong>Descrição</strong>
+            <span>${escapar(descricao || "Não informada")}</span>
+        </div>
+
+        <div class="preview-line">
+            <strong>Data</strong>
+            <span>${orçamentoAtual.data}</span>
+        </div>
+
+        <div class="preview-total">
+            <span>Total</span>
+            <span>${dinheiro(valor)}</span>
+        </div>
+    `;
+
+    document.getElementById("resultado").classList.remove("hidden");
+
+    document.getElementById("resultado").scrollIntoView({
+        behavior: "smooth"
+    });
+}
+
+function escapar(texto) {
+    return String(texto)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+}
+
+function enviarWhatsApp() {
+
+    if (!orçamentoAtual) {
+        alert("Gere um orçamento primeiro.");
+        return;
+    }
+
+    let telefone = orçamentoAtual.telefone.replace(/\D/g, "");
+
+    if (telefone.length === 11) {
+        telefone = "55" + telefone;
+    }
+
+    if (telefone.length === 10) {
+        telefone = "55" + telefone;
+    }
+
+    const mensagem =
+`Olá, ${orçamentoAtual.cliente}! 👋
+
+Segue seu orçamento:
+
+📋 Serviço: ${orçamentoAtual.servico}
+
+📝 Descrição:
+${orçamentoAtual.descricao || "Não informada"}
+
+💰 Valor: ${dinheiro(orçamentoAtual.valor)}
+
+📅 Data: ${orçamentoAtual.data}
+
+Obrigado pela preferência!`;
+
+    const texto = encodeURIComponent(mensagem);
+
+    let url;
+
+    if (telefone.length >= 12) {
+        url = "https://wa.me/" + telefone + "?text=" + texto;
+    } else {
+        url = "https://wa.me/?text=" + texto;
+    }
+
+    window.open(url, "_blank");
+}
+
+function salvarOrcamento() {
+
+    if (!orçamentoAtual) {
+        alert("Gere um orçamento primeiro.");
+        return;
+    }
+
+    let lista = JSON.parse(
+        localStorage.getItem("orcazap_orcamentos") || "[]"
+    );
+
+    lista.unshift(orçamentoAtual);
+
+    localStorage.setItem(
+        "orcazap_orcamentos",
+        JSON.stringify(lista)
+    );
+
+    document.getElementById("status").textContent =
+        "✓ Orçamento salvo neste aparelho.";
+
+    mostrarLista();
+}
+
+function mostrarLista() {
+
+    const lista = JSON.parse(
+        localStorage.getItem("orcazap_orcamentos") || "[]"
+    );
+
+    const elemento = document.getElementById("lista");
+
+    if (lista.length === 0) {
+        elemento.innerHTML =
+            "Nenhum orçamento salvo ainda.";
+        return;
+    }
+
+    elemento.innerHTML = lista.map((item, index) => `
+        <div style="
+            padding:14px 0;
+            border-bottom:1px solid #29355b;
+        ">
+            <strong>${escapar(item.cliente)}</strong><br>
+
+            <span style="color:#aeb8d4">
+                ${escapar(item.servico)}
+            </span><br>
+
+            <span style="color:#25d366">
+                ${dinheiro(item.valor)}
+            </span>
+
+            <button
+                class="btn-danger"
+                onclick="excluirOrcamento(${index})">
+                Excluir
+            </button>
+        </div>
+    `).join("");
+}
+
+function excluirOrcamento(index) {
+
+    let lista = JSON.parse(
+        localStorage.getItem("orcazap_orcamentos") || "[]"
+    );
+
+    lista.splice(index, 1);
+
+    localStorage.setItem(
+        "orcazap_orcamentos",
+        JSON.stringify(lista)
+    );
+
+    mostrarLista();
+}
+
+mostrarLista();
+
+</script>
+
+</body>
+          </html>

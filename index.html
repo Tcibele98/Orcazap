@@ -899,4 +899,1150 @@ header{
 
         <input
             class="input"
-           
+               id="whatsappInput"
+    placeholder="WhatsApp do cliente"
+    type="tel"
+>
+
+<input
+    class="input"
+    id="serviceInput"
+    placeholder="Serviço"
+>
+
+<input
+    class="input"
+    id="valueInput"
+    placeholder="Valor do orçamento"
+    type="number"
+>
+
+<input
+    class="input"
+    id="descriptionInput"
+    placeholder="Descrição do serviço"
+>
+
+<div class="modal-actions">
+
+    <button
+        class="cancel"
+        onclick="closeModal()">
+        Cancelar
+    </button>
+
+    <button
+        class="save"
+        onclick="saveQuote()">
+        Gerar orçamento
+    </button>
+
+</div>
+
+</div>
+</div>
+
+
+<script>
+
+let quotesData = [];
+
+
+/* =========================
+   MODAL
+========================= */
+
+function openModal(){
+
+    document.getElementById("modal").classList.add("show");
+
+}
+
+function closeModal(){
+
+    document.getElementById("modal").classList.remove("show");
+
+}
+
+
+/* =========================
+   NOVO ORÇAMENTO
+========================= */
+
+function saveQuote(){
+
+    const client =
+        document.getElementById("clientInput").value.trim();
+
+    const whatsapp =
+        document.getElementById("whatsappInput").value.trim();
+
+    const service =
+        document.getElementById("serviceInput").value.trim();
+
+    const value =
+        document.getElementById("valueInput").value.trim();
+
+    const description =
+        document.getElementById("descriptionInput").value.trim();
+
+
+    if(!client || !service || !value){
+
+        alert("Preencha o nome do cliente, serviço e valor.");
+
+        return;
+
+    }
+
+
+    const number =
+        "#ORC-" +
+        String(Date.now()).slice(-6);
+
+
+    const quote = {
+
+        id:number,
+
+        client:client,
+
+        whatsapp:whatsapp,
+
+        service:service,
+
+        value:value,
+
+        description:description,
+
+        status:"novo",
+
+        date:new Date().toLocaleDateString("pt-BR")
+
+    };
+
+
+    quotesData.push(quote);
+
+
+    try{
+
+        localStorage.setItem(
+            "orcazap_quotes",
+            JSON.stringify(quotesData)
+        );
+
+    }catch(e){}
+
+
+    closeModal();
+
+
+    showQuoteScreen(quote);
+
+
+    updateCounters();
+
+}
+
+
+/* =========================
+   CARREGAR DADOS
+========================= */
+
+function loadQuotes(){
+
+    try{
+
+        const saved =
+            localStorage.getItem("orcazap_quotes");
+
+        if(saved){
+
+            quotesData = JSON.parse(saved);
+
+        }
+
+    }catch(e){
+
+        quotesData = [];
+
+    }
+
+}
+
+
+loadQuotes();
+
+
+/* =========================
+   WHATSAPP
+========================= */
+
+function cleanPhone(phone){
+
+    return String(phone || "")
+        .replace(/\D/g,"");
+
+}
+
+
+function openWhatsApp(name){
+
+    let phone = "";
+
+
+    const quote =
+        quotesData.find(q => q.client === name);
+
+    if(quote){
+
+        phone = cleanPhone(quote.whatsapp);
+
+    }
+
+
+    if(!phone){
+
+        phone = prompt(
+            "Digite o número do WhatsApp de " +
+            name +
+            " com DDD:"
+        );
+
+    }
+
+
+    phone = cleanPhone(phone);
+
+
+    if(!phone){
+
+        alert("Número de WhatsApp não informado.");
+
+        return;
+
+    }
+
+
+    if(phone.length <= 11){
+
+        phone = "55" + phone;
+
+    }
+
+
+    const message =
+        "Olá " +
+        name +
+        "! Tudo bem? " +
+        "Estou entrando em contato sobre o seu orçamento pelo OrçaZap.";
+
+
+    const url =
+        "https://wa.me/" +
+        phone +
+        "?text=" +
+        encodeURIComponent(message);
+
+
+    window.open(url,"_blank");
+
+}
+
+
+/* =========================
+   LEMBRETE
+========================= */
+
+function remind(name){
+
+    let phone = "";
+
+
+    const quote =
+        quotesData.find(q => q.client === name);
+
+    if(quote){
+
+        phone = cleanPhone(quote.whatsapp);
+
+    }
+
+
+    if(!phone){
+
+        phone = prompt(
+            "Digite o número do WhatsApp de " +
+            name +
+            " com DDD:"
+        );
+
+    }
+
+
+    phone = cleanPhone(phone);
+
+
+    if(!phone){
+
+        alert("Número de WhatsApp não informado.");
+
+        return;
+
+    }
+
+
+    if(phone.length <= 11){
+
+        phone = "55" + phone;
+
+    }
+
+
+    const message =
+        "Olá " +
+        name +
+        "! 👋\n\n" +
+        "Passando para lembrar sobre o orçamento " +
+        "que enviamos anteriormente.\n\n" +
+        "Se tiver alguma dúvida, estou à disposição. 😊";
+
+
+    const url =
+        "https://wa.me/" +
+        phone +
+        "?text=" +
+        encodeURIComponent(message);
+
+
+    window.open(url,"_blank");
+
+}
+
+
+/* =========================
+   FILTROS
+========================= */
+
+function filterQuotes(status,button){
+
+    const cards =
+        document.querySelectorAll(".quote");
+
+
+    cards.forEach(card => {
+
+        if(status === "todos"){
+
+            card.style.display = "";
+
+        }else{
+
+            card.style.display =
+                card.dataset.status === status
+                ? ""
+                : "none";
+
+        }
+
+    });
+
+
+    document
+        .querySelectorAll(".filters button")
+        .forEach(btn => btn.classList.remove("active"));
+
+
+    if(button){
+
+        button.classList.add("active");
+
+    }
+
+
+    checkEmpty();
+
+}
+
+
+function searchQuotes(){
+
+    const search =
+        document
+            .getElementById("search")
+            .value
+            .toLowerCase()
+            .trim();
+
+
+    const cards =
+        document.querySelectorAll(".quote");
+
+
+    cards.forEach(card => {
+
+        const text =
+            card.dataset.search || "";
+
+        card.style.display =
+            text.includes(search)
+            ? ""
+            : "none";
+
+    });
+
+
+    checkEmpty();
+
+}
+
+
+function checkEmpty(){
+
+    const cards =
+        [...document.querySelectorAll(".quote")];
+
+    const visible =
+        cards.some(card =>
+            card.style.display !== "none"
+        );
+
+
+    const empty =
+        document.getElementById("empty");
+
+
+    if(empty){
+
+        empty.style.display =
+            visible ? "none" : "block";
+
+    }
+
+}
+
+
+/* =========================
+   FILTRO EXTRA
+========================= */
+
+function showFilters(){
+
+    const filters =
+        document.getElementById("filters");
+
+
+    if(filters){
+
+        filters.scrollIntoView({
+
+            behavior:"smooth",
+
+            block:"center"
+
+        });
+
+    }
+
+}
+
+
+/* =========================
+   DETALHES
+========================= */
+
+function details(name){
+
+    let quote =
+        quotesData.find(q => q.client === name);
+
+
+    if(!quote){
+
+        quote = {
+
+            id:"#ORC-001",
+
+            client:name,
+
+            service:"Pintura Comercial",
+
+            value:"2800",
+
+            description:
+                "Orçamento cadastrado no sistema.",
+
+            status:"fechado",
+
+            date:"10/09/2026"
+
+        };
+
+    }
+
+
+    showQuoteScreen(quote);
+
+}
+
+
+/* =========================
+   TELA DE ORÇAMENTO
+========================= */
+
+function showQuoteScreen(quote){
+
+    let screen =
+        document.getElementById("dynamicScreen");
+
+
+    if(!screen){
+
+        screen =
+            document.createElement("div");
+
+        screen.id = "dynamicScreen";
+
+        screen.style.cssText = `
+            position:fixed;
+            inset:0;
+            z-index:200;
+            background:#030914;
+            color:#f4f7ff;
+            overflow-y:auto;
+        `;
+
+        document.body.appendChild(screen);
+
+    }
+
+
+    screen.innerHTML = `
+
+        <div style="
+            max-width:520px;
+            min-height:100vh;
+            margin:auto;
+            padding:20px 16px 100px;
+            background:
+            radial-gradient(
+                circle at 80% 0%,
+                rgba(0,180,255,.12),
+                transparent 28%
+            ),
+            #06101e;
+        ">
+
+            <div style="
+                display:flex;
+                align-items:center;
+                gap:12px;
+                margin-bottom:25px;
+            ">
+
+                <button
+                    onclick="closeDynamicScreen()"
+                    style="
+                    width:42px;
+                    height:42px;
+                    border-radius:13px;
+                    border:1px solid #294969;
+                    background:#0b192b;
+                    color:white;
+                    font-size:20px;
+                    ">
+                    ←
+                </button>
+
+                <h2>
+                    Orçamento
+                </h2>
+
+            </div>
+
+
+            <div style="
+                border:1px solid #21476d;
+                background:linear-gradient(
+                    145deg,
+                    #0c1d32,
+                    #081321
+                );
+                border-radius:20px;
+                padding:20px;
+            ">
+
+                <div style="
+                    color:#00e6a8;
+                    font-size:12px;
+                    margin-bottom:8px;
+                ">
+                    ${quote.id || "#ORC-001"}
+                </div>
+
+
+                <h2 style="margin-bottom:8px;">
+                    ${quote.client}
+                </h2>
+
+
+                <div style="
+                    color:#9eb6d5;
+                    margin-bottom:20px;
+                ">
+                    ${quote.service}
+                </div>
+
+
+                <div style="
+                    border-top:1px solid #213b59;
+                    padding-top:16px;
+                    margin-top:10px;
+                ">
+
+                    <div style="
+                        color:#8198b4;
+                        font-size:12px;
+                    ">
+                        VALOR
+                    </div>
+
+                    <div style="
+                        font-size:30px;
+                        font-weight:800;
+                        margin-top:5px;
+                    ">
+                        R$ ${formatMoney(quote.value)}
+                    </div>
+
+                </div>
+
+
+                <div style="
+                    margin-top:20px;
+                    color:#a9bdd6;
+                    line-height:1.5;
+                    font-size:14px;
+                ">
+                    ${quote.description || "Sem descrição adicional."}
+                </div>
+
+
+                <div style="
+                    margin-top:20px;
+                    color:#748aa5;
+                    font-size:12px;
+                ">
+                    📅 ${quote.date || ""}
+                </div>
+
+            </div>
+
+
+            <button
+                onclick="openWhatsApp('${escapeQuote(quote.client)}')"
+                style="
+                width:100%;
+                margin-top:18px;
+                padding:15px;
+                border:0;
+                border-radius:13px;
+                background:#00d99e;
+                color:#001b13;
+                font-weight:800;
+                font-size:15px;
+                ">
+                🟢 Enviar pelo WhatsApp
+            </button>
+
+
+            <button
+                onclick="printQuote()"
+                style="
+                width:100%;
+                margin-top:10px;
+                padding:15px;
+                border:1px solid #285077;
+                border-radius:13px;
+                background:#091827;
+                color:#d3e2f5;
+                font-weight:800;
+                font-size:15px;
+                ">
+                📄 Baixar / Salvar PDF
+            </button>
+
+        </div>
+    `;
+
+
+    screen.style.display = "block";
+
+}
+
+
+function closeDynamicScreen(){
+
+    const screen =
+        document.getElementById("dynamicScreen");
+
+
+    if(screen){
+
+        screen.style.display = "none";
+
+    }
+
+}
+
+
+function escapeQuote(text){
+
+    return String(text || "")
+        .replace(/'/g,"\\'");
+
+}
+
+
+function formatMoney(value){
+
+    const number =
+        Number(
+            String(value)
+                .replace(",",".")
+        ) || 0;
+
+
+    return number.toLocaleString(
+        "pt-BR",
+        {
+            minimumFractionDigits:2,
+            maximumFractionDigits:2
+        }
+    );
+
+}
+
+
+/* =========================
+   PDF
+========================= */
+
+function printQuote(){
+
+    window.print();
+
+}
+
+
+/* =========================
+   NAVEGAÇÃO
+========================= */
+
+function nav(page){
+
+    document
+        .querySelectorAll(".nav-item")
+        .forEach(item => {
+
+            item.classList.remove("active");
+
+        });
+
+
+    const items =
+        document.querySelectorAll(".nav-item");
+
+
+    if(page === "inicio"){
+
+        if(items[0])
+            items[0].classList.add("active");
+
+        closeDynamicScreen();
+
+        window.scrollTo({
+
+            top:0,
+
+            behavior:"smooth"
+
+        });
+
+        return;
+
+    }
+
+
+    if(page === "orcamentos"){
+
+        if(items[1])
+            items[1].classList.add("active");
+
+        showHistory();
+
+        return;
+
+    }
+
+
+    if(page === "lembretes"){
+
+        if(items[2])
+            items[2].classList.add("active");
+
+        showReminders();
+
+        return;
+
+    }
+
+
+    if(page === "config"){
+
+        if(items[3])
+            items[3].classList.add("active");
+
+        showConfig();
+
+        return;
+
+    }
+
+}
+
+
+/* =========================
+   HISTÓRICO
+========================= */
+
+function showHistory(){
+
+    let screen =
+        document.getElementById("dynamicScreen");
+
+
+    if(!screen){
+
+        screen =
+            document.createElement("div");
+
+        screen.id="dynamicScreen";
+
+        screen.style.cssText=`
+            position:fixed;
+            inset:0;
+            z-index:200;
+            background:#030914;
+            overflow-y:auto;
+        `;
+
+        document.body.appendChild(screen);
+
+    }
+
+
+    let savedQuotes = quotesData;
+
+
+    screen.innerHTML=`
+
+        <div style="
+            max-width:520px;
+            min-height:100vh;
+            margin:auto;
+            padding:22px 16px 100px;
+            color:#fff;
+            background:#06101e;
+        ">
+
+            <button
+                onclick="nav('inicio')"
+                style="
+                width:42px;
+                height:42px;
+                border-radius:13px;
+                border:1px solid #294969;
+                background:#0b192b;
+                color:white;
+                font-size:20px;
+                ">
+                ←
+            </button>
+
+            <h2 style="margin-top:20px;">
+                📋 Seus Orçamentos
+            </h2>
+
+            <p style="
+                color:#8da5c0;
+                margin-top:6px;
+                margin-bottom:20px;
+            ">
+                Histórico dos seus orçamentos.
+            </p>
+
+
+            ${
+                savedQuotes.length
+                ?
+                savedQuotes.map(q => `
+
+                    <div style="
+                        border:1px solid #213b59;
+                        background:#0a192b;
+                        border-radius:17px;
+                        padding:16px;
+                        margin-bottom:12px;
+                    ">
+
+                        <strong>
+                            ${q.client}
+                        </strong>
+
+                        <div style="
+                            color:#91a8c2;
+                            font-size:12px;
+                            margin-top:5px;
+                        ">
+                            ${q.service}
+                        </div>
+
+                        <div style="
+                            font-size:18px;
+                            font-weight:800;
+                            margin-top:8px;
+                        ">
+                            R$ ${formatMoney(q.value)}
+                        </div>
+
+                        <button
+                            onclick="showQuoteScreenById('${q.id}')"
+                            style="
+                            margin-top:12px;
+                            padding:10px 14px;
+                            border-radius:10px;
+                            border:1px solid #1769ad;
+                            background:#08192c;
+                            color:#c2d5ee;
+                            ">
+                            Ver orçamento
+                        </button>
+
+                    </div>
+
+                `).join("")
+                :
+                `
+                    <div style="
+                        text-align:center;
+                        color:#7890ad;
+                        padding:40px 10px;
+                    ">
+                        Nenhum orçamento criado ainda.
+                    </div>
+                `
+            }
+
+        </div>
+    `;
+
+
+    screen.style.display="block";
+
+}
+
+
+function showQuoteScreenById(id){
+
+    const quote =
+        quotesData.find(q => q.id === id);
+
+
+    if(quote){
+
+        showQuoteScreen(quote);
+
+    }
+
+}
+
+
+/* =========================
+   LEMBRETES
+========================= */
+
+function showReminders(){
+
+    let screen =
+        document.getElementById("dynamicScreen");
+
+
+    if(!screen){
+
+        screen=document.createElement("div");
+
+        screen.id="dynamicScreen";
+
+        screen.style.cssText=`
+            position:fixed;
+            inset:0;
+            z-index:200;
+            background:#030914;
+            overflow-y:auto;
+        `;
+
+        document.body.appendChild(screen);
+
+    }
+
+
+    screen.innerHTML=`
+
+        <div style="
+            max-width:520px;
+            min-height:100vh;
+            margin:auto;
+            padding:22px 16px 100px;
+            color:#fff;
+            background:#06101e;
+        ">
+
+            <button
+                onclick="nav('inicio')"
+                style="
+                width:42px;
+                height:42px;
+                border-radius:13px;
+                border:1px solid #294969;
+                background:#0b192b;
+                color:white;
+                font-size:20px;
+                ">
+                ←
+            </button>
+
+            <h2 style="margin-top:20px;">
+                🔔 Lembretes
+            </h2>
+
+            <p style="
+                color:#8da5c0;
+                margin-top:6px;
+            ">
+                Clientes que precisam de acompanhamento.
+            </p>
+
+
+            <div style="
+                margin-top:20px;
+                border:1px solid #6537a2;
+                background:#0d182b;
+                border-radius:17px;
+                padding:18px;
+            ">
+
+                <strong>
+                    2 lembretes pendentes
+                </strong>
+
+                <p style="
+                    color:#91a8c2;
+                    font-size:13px;
+                    margin-top:8px;
+                    line-height:1.5;
+                ">
+                    Use o WhatsApp para entrar em contato
+                    novamente com seus clientes.
+                </p>
+
+            </div>
+
+        </div>
+    `;
+
+
+    screen.style.display="block";
+
+}
+
+
+/* =========================
+   CONFIGURAÇÕES
+========================= */
+
+function showConfig(){
+
+    let screen =
+        document.getElementById("dynamicScreen");
+
+
+    if(!screen){
+
+        screen=document.createElement("div");
+
+        screen.id="dynamicScreen";
+
+        screen.style.cssText=`
+            position:fixed;
+            inset:0;
+            z-index:200;
+            background:#030914;
+            overflow-y:auto;
+        `;
+
+        document.body.appendChild(screen);
+
+    }
+
+
+    screen.innerHTML=`
+
+        <div style="
+            max-width:520px;
+            min-height:100vh;
+            margin:auto;
+            padding:22px 16px 100px;
+            color:#fff;
+            background:#06101e;
+        ">
+
+            <button
+                onclick="nav('inicio')"
+                style="
+                width:42px;
+                height:42px;
+                border-radius:13px;
+                border:1px solid #294969;
+                background:#0b192b;
+                color:white;
+                font-size:20px;
+                ">
+                ←
+            </button>
+
+            <h2 style="margin-top:20px;">
+                ⚙ Configurações
+            </h2>
+
+
+            <div style="
+                margin-top:20px;
+                border:1px solid #21476d;
+                background:#0a192b;
+                border-radius:17px;
+                padding:18px;
+            ">
+
+                <strong>
+                    🏪 Minha Empresa
+                </strong>
+
+                <p style="
+                    color:#91a8c2;
+                    margin-top:8px;
+                    font-size:13px;
+                ">
+                    Configure os dados que aparecerão
+                    nos seus orçamentos.

@@ -4,2045 +4,1179 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#07111f">
-<meta name="description" content="OrçaZap - Gestão inteligente de orçamentos pelo WhatsApp">
 <title>OrçaZap V2</title>
 
 <style>
+:root{
+  --bg:#07111f;
+  --panel:#0d1a2b;
+  --panel-2:#101f33;
+  --line:#203550;
+  --text:#f5f8fc;
+  --muted:#91a3bb;
+  --green:#25d366;
+  --green-dark:#0e8f46;
+  --danger:#ff6b7d;
+  --white:#ffffff;
+  --shadow:0 18px 50px rgba(0,0,0,.28);
+}
+
 *{
-    box-sizing:border-box;
-    margin:0;
-    padding:0;
-    font-family:Arial,Helvetica,sans-serif;
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+  font-family:Inter,Arial,sans-serif
+}
+
+html{
+  scroll-behavior:smooth
 }
 
 body{
-    background:#030914;
-    color:#f4f7ff;
-    min-height:100vh;
+  background:radial-gradient(circle at 50% -10%,#173251 0,#07111f 42%);
+  color:var(--text);
+  min-height:100vh
 }
 
-.app{
-    width:100%;
-    max-width:520px;
-    margin:auto;
-    min-height:100vh;
-    background:
-        radial-gradient(circle at 80% 0%,rgba(0,180,255,.12),transparent 28%),
-        radial-gradient(circle at 10% 30%,rgba(91,44,255,.10),transparent 25%),
-        #06101e;
-    padding-bottom:90px;
+button,
+input,
+textarea{
+  font:inherit
 }
 
-/* HEADER */
-
-header{
-    padding:24px 18px 12px;
+button{
+  cursor:pointer
 }
 
-.top{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:12px;
+.header{
+  position:relative;
+  padding:26px 18px 24px;
+  border-bottom:1px solid rgba(255,255,255,.06);
+  background:rgba(7,17,31,.82);
+  backdrop-filter:blur(14px)
 }
 
-.menu{
-    width:42px;
-    height:42px;
-    border:1px solid #263d5d;
-    border-radius:13px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:22px;
-    color:#9fb8da;
+.header-inner{
+  width:100%;
+  max-width:900px;
+  margin:auto;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:12px
+}
+
+.brand-mark{
+  width:44px;
+  height:44px;
+  border-radius:14px;
+  display:grid;
+  place-items:center;
+  background:linear-gradient(145deg,#2be875,#17a957);
+  color:#06120a;
+  font-size:22px;
+  box-shadow:0 10px 30px rgba(37,211,102,.22)
 }
 
 .logo{
-    flex:1;
-    font-size:27px;
-    font-weight:800;
-    letter-spacing:-1px;
+  font-size:25px;
+  font-weight:900;
+  letter-spacing:-.7px
 }
 
 .logo span{
-    color:#00e6a8;
+  color:var(--green)
 }
 
-.company{
-    border:1px solid #38587f;
-    background:#0b192b;
-    border-radius:13px;
-    padding:11px 12px;
-    color:#fff;
-    font-size:13px;
+.version{
+  font-size:11px;
+  color:#b9c8da;
+  border:1px solid #2b405b;
+  border-radius:999px;
+  padding:6px 9px;
+  background:#0b1727
 }
 
-.subtitle{
-    color:#a6bad5;
-    font-size:14px;
-    margin-top:8px;
+.container{
+  width:100%;
+  max-width:900px;
+  margin:auto;
+  padding:24px 16px 34px
 }
 
-.tagline{
-    color:#6f89aa;
-    font-size:12px;
-    margin-top:7px;
+.hero{
+  padding:18px 4px 26px
 }
 
-/* DASHBOARD */
-
-.stats{
-    display:grid;
-    grid-template-columns:repeat(2,1fr);
-    gap:10px;
-    padding:15px 16px;
+.eyebrow{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  color:#9fb1c9;
+  font-size:12px;
+  text-transform:uppercase;
+  letter-spacing:1.2px;
+  margin-bottom:9px
 }
 
-.stat{
-    min-height:115px;
-    padding:16px;
-    border-radius:17px;
-    border:1px solid #21476d;
-    background:linear-gradient(145deg,#0c1d32,#081321);
-    position:relative;
-    overflow:hidden;
+.dot{
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  background:var(--green);
+  box-shadow:0 0 12px rgba(37,211,102,.7)
 }
 
-.stat:nth-child(2){
-    border-color:#80641e;
+.hero h1{
+  font-size:clamp(28px,6vw,42px);
+  line-height:1.05;
+  letter-spacing:-1.4px;
+  max-width:650px
 }
 
-.stat:nth-child(3){
-    border-color:#6537a2;
+.hero p{
+  color:var(--muted);
+  font-size:15px;
+  line-height:1.6;
+  margin-top:10px;
+  max-width:650px
 }
 
-.stat:nth-child(4){
-    border-color:#08775e;
+.grid{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+  gap:16px;
+  align-items:start
 }
 
-.icon{
-    font-size:21px;
-    margin-bottom:8px;
+.card{
+  background:linear-gradient(
+    180deg,
+    rgba(16,31,51,.98),
+    rgba(11,24,40,.98)
+  );
+  border:1px solid var(--line);
+  border-radius:22px;
+  padding:20px;
+  box-shadow:var(--shadow)
+}
+
+.card.full{
+  grid-column:1/-1
+}
+
+.card-title{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:18px
+}
+
+.card-title h2{
+  font-size:18px;
+  letter-spacing:-.2px
+}
+
+.card-title p{
+  font-size:12px;
+  color:var(--muted);
+  margin-top:4px
 }
 
 .number{
-    font-size:28px;
-    font-weight:800;
+  width:30px;
+  height:30px;
+  border-radius:10px;
+  background:#142941;
+  border:1px solid #29435f;
+  display:grid;
+  place-items:center;
+  color:var(--green);
+  font-weight:800;
+  font-size:12px;
+  flex:none
 }
 
-.label{
-    color:#a5b8d1;
-    font-size:13px;
-    margin-top:2px;
+.field{
+  margin-top:14px
 }
 
-.growth{
-    color:#00e6a8;
-    font-size:11px;
-    margin-top:8px;
+.field:first-of-type{
+  margin-top:0
 }
 
-/* BANNER */
-
-.banner{
-    margin:2px 16px 20px;
-    border:1px solid #1666a4;
-    background:linear-gradient(120deg,#0b2140,#071728);
-    border-radius:17px;
-    padding:17px;
-    display:flex;
-    align-items:center;
-    gap:14px;
+label{
+  display:block;
+  color:#b8c6d8;
+  font-size:12px;
+  font-weight:700;
+  margin-bottom:7px
 }
 
-.banner-icon{
-    font-size:29px;
+input,
+textarea{
+  width:100%;
+  border:1px solid #29425e;
+  background:#091626;
+  color:var(--text);
+  border-radius:13px;
+  padding:13px 14px;
+  outline:none;
+  transition:.18s;
+  font-size:14px
 }
 
-.banner h3{
-    font-size:15px;
-    margin-bottom:6px;
+input::placeholder,
+textarea::placeholder{
+  color:#60758e
 }
 
-.banner p{
-    color:#9eb6d5;
-    font-size:12px;
-    line-height:1.45;
+input:focus,
+textarea:focus{
+  border-color:rgba(37,211,102,.8);
+  box-shadow:0 0 0 3px rgba(37,211,102,.08)
 }
 
-/* CONTENT */
-
-.section{
-    padding:0 16px;
-}
-
-.section-head{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    margin-bottom:12px;
-}
-
-.section-head h2{
-    font-size:21px;
-}
-
-.new-btn{
-    border:0;
-    border-radius:11px;
-    padding:10px 13px;
-    background:#00d99e;
-    color:#001c14;
-    font-weight:800;
-    cursor:pointer;
-}
-
-/* SEARCH */
-
-.search-area{
-    display:flex;
-    gap:8px;
-    margin-bottom:14px;
-}
-
-.search{
-    flex:1;
-    border:1px solid #2a4b70;
-    background:#091a2d;
-    color:#fff;
-    padding:13px 14px;
-    border-radius:13px;
-    outline:none;
-}
-
-.search::placeholder{
-    color:#7289a6;
-}
-
-.filter{
-    width:47px;
-    border:1px solid #2a4b70;
-    background:#091a2d;
-    color:#b9cce5;
-    border-radius:13px;
-    font-size:18px;
-}
-
-/* FILTERS */
-
-.filters{
-    display:flex;
-    gap:7px;
-    overflow-x:auto;
-    padding-bottom:13px;
-}
-
-.filters button{
-    white-space:nowrap;
-    border:1px solid #284766;
-    background:#091827;
-    color:#9db4d0;
-    padding:8px 12px;
-    border-radius:20px;
-    font-size:12px;
-}
-
-.filters button.active{
-    background:#0b6d61;
-    border-color:#00d99e;
-    color:#fff;
-}
-
-/* CARDS */
-
-.quote{
-    border:1px solid #213b59;
-    background:linear-gradient(145deg,#0a192b,#071321);
-    border-radius:17px;
-    padding:15px;
-    margin-bottom:12px;
-    box-shadow:0 8px 25px rgba(0,0,0,.16);
-}
-
-.quote-top{
-    display:flex;
-    align-items:flex-start;
-    gap:11px;
-}
-
-.avatar{
-    width:44px;
-    height:44px;
-    border-radius:50%;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    background:#123c8c;
-    font-size:21px;
-}
-
-.quote-info{
-    flex:1;
-}
-
-.client{
-    font-size:16px;
-    font-weight:800;
-}
-
-.service{
-    color:#94a9c3;
-    font-size:12px;
-    margin-top:4px;
-}
-
-.price{
-    font-size:18px;
-    font-weight:800;
-    margin-top:7px;
-}
-
-.status{
-    font-size:10px;
-    font-weight:800;
-    padding:7px 9px;
-    border-radius:20px;
-    white-space:nowrap;
-}
-
-.new{
-    background:#075fc6;
-}
-
-.waiting{
-    background:#c89100;
-    color:#101010;
-}
-
-.reminder{
-    background:#6b35d4;
-}
-
-.closed{
-    background:#087c4d;
-}
-
-.date{
-    color:#748aa5;
-    font-size:11px;
-    margin-top:7px;
+textarea{
+  min-height:116px;
+  resize:vertical
 }
 
 .actions{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:8px;
-    margin-top:14px;
+  display:grid;
+  grid-template-columns:1fr;
+  gap:10px;
+  margin-top:18px
 }
 
-.action{
-    border-radius:11px;
-    padding:11px 7px;
-    font-weight:700;
-    font-size:11px;
-    cursor:pointer;
+.btn{
+  width:100%;
+  border:0;
+  border-radius:13px;
+  padding:14px 16px;
+  font-size:14px;
+  font-weight:800;
+  transition:transform .15s,filter .15s
 }
 
-.whatsapp{
-    background:#00d99e;
-    border:1px solid #00e6a8;
-    color:#001a13;
+.btn:active{
+  transform:scale(.99)
 }
 
-.remind{
-    background:#08192c;
-    border:1px solid #1769ad;
-    color:#c2d5ee;
+.btn-primary{
+  background:linear-gradient(135deg,#2be875,#19b75b);
+  color:#06130a;
+  box-shadow:0 10px 25px rgba(37,211,102,.17)
 }
 
-/* EMPTY */
+.btn-secondary{
+  background:#172a42;
+  color:#eaf1f8;
+  border:1px solid #29425e
+}
+
+.btn-whatsapp{
+  background:#25d366;
+  color:#06130a
+}
+
+.btn-danger{
+  background:#321b25;
+  color:#ff9bab;
+  border:1px solid #57303d
+}
+
+#resultado{
+  margin-top:16px
+}
+
+.hidden{
+  display:none!important
+}
+
+.preview{
+  background:#f8fafc;
+  color:#101827;
+  border-radius:17px;
+  padding:18px
+}
+
+.preview-head{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:15px;
+  padding-bottom:15px;
+  border-bottom:1px solid #e4e8ee
+}
+
+.preview h3{
+  font-size:20px
+}
+
+.preview small{
+  color:#667085
+}
+
+.preview-line{
+  display:flex;
+  justify-content:space-between;
+  gap:18px;
+  padding:12px 0;
+  border-bottom:1px solid #e5e7eb;
+  font-size:14px
+}
+
+.preview-line strong{
+  color:#475467
+}
+
+.preview-line span{
+  text-align:right;
+  max-width:65%;
+  overflow-wrap:anywhere
+}
+
+.preview-total{
+  display:flex;
+  justify-content:space-between;
+  gap:15px;
+  padding-top:16px;
+  font-size:21px;
+  font-weight:900
+}
+
+.preview-total span:last-child{
+  color:#0b8e45
+}
+
+.status{
+  text-align:center;
+  color:var(--green);
+  font-size:13px;
+  min-height:18px;
+  margin-top:10px
+}
+
+.saved-list{
+  display:grid;
+  gap:10px
+}
 
 .empty{
-    display:none;
-    text-align:center;
-    color:#7890ad;
-    padding:30px;
+  text-align:center;
+  color:#71839a;
+  border:1px dashed #2a415d;
+  border-radius:14px;
+  padding:18px;
+  font-size:13px
 }
 
-/* NAVIGATION */
-
-.bottom-nav{
-    position:fixed;
-    bottom:0;
-    left:50%;
-    transform:translateX(-50%);
-    width:100%;
-    max-width:520px;
-    height:76px;
-    background:rgba(5,15,28,.97);
-    border-top:1px solid #1c3550;
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    z-index:50;
+.saved-item{
+  border:1px solid #263d57;
+  background:#0a1727;
+  border-radius:15px;
+  padding:14px
 }
 
-.nav-item{
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    gap:5px;
-    color:#7187a5;
-    font-size:11px;
-    cursor:pointer;
+.saved-top{
+  display:flex;
+  justify-content:space-between;
+  gap:10px
 }
 
-.nav-item span{
-    font-size:22px;
+.saved-name{
+  font-weight:800
 }
 
-.nav-item.active{
-    color:#00e6a8;
+.saved-service{
+  color:#9fb0c5;
+  font-size:13px;
+  margin-top:4px
 }
 
-.badge{
-    position:absolute;
-    margin-left:24px;
-    margin-top:-23px;
-    background:#ef4d5b;
-    color:#fff;
-    border-radius:20px;
-    font-size:9px;
-    padding:3px 6px;
+.saved-bottom{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin-top:11px
 }
 
-/* MODAL */
-
-.modal{
-    position:fixed;
-    inset:0;
-    background:rgba(0,0,0,.75);
-    display:none;
-    align-items:flex-end;
-    justify-content:center;
-    z-index:100;
+.saved-value{
+  color:var(--green);
+  font-weight:900
 }
 
-.modal.show{
-    display:flex;
+.saved-date{
+  color:#71839a;
+  font-size:11px
 }
 
-.modal-box{
-    width:100%;
-    max-width:520px;
-    background:#091727;
-    border:1px solid #294969;
-    border-radius:25px 25px 0 0;
-    padding:22px;
+.saved-item .btn-danger{
+  margin-top:11px;
+  padding:10px;
+  font-size:12px
 }
 
-.modal-box h2{
-    margin-bottom:17px;
+.tip{
+  margin-top:16px;
+  border:1px solid #203a55;
+  background:#0b1b2d;
+  border-radius:16px;
+  padding:14px;
+  color:#8fa3bb;
+  font-size:12px;
+  line-height:1.5
 }
 
-.input{
-    width:100%;
-    background:#061321;
-    color:#fff;
-    border:1px solid #284664;
-    padding:13px;
-    border-radius:11px;
-    margin-bottom:10px;
-    outline:none;
+.tip strong{
+  color:#d9e4ef
 }
 
-.modal-actions{
-    display:flex;
-    gap:9px;
-    margin-top:8px;
+footer{
+  text-align:center;
+  color:#5e7189;
+  font-size:11px;
+  padding:6px 20px 26px
 }
 
-.modal-actions button{
-    flex:1;
-    padding:13px;
-    border-radius:11px;
-    font-weight:800;
-    border:0;
-}
+@media(max-width:700px){
 
-.cancel{
-    background:#17273b;
-    color:#b9cbe1;
-}
+  .grid{
+    grid-template-columns:1fr
+  }
 
-.save{
-    background:#00d99e;
-    color:#001b13;
-}
+  .card.full{
+    grid-column:auto
+  }
 
-/* RESPONSIVE */
+  .header-inner{
+    align-items:flex-start
+  }
 
-@media(max-width:360px){
-    .logo{
-        font-size:23px;
-    }
+  .hero{
+    padding-top:10px
+  }
 
-    .company{
-        font-size:11px;
-        padding:9px;
-    }
+  .card{
+    padding:17px
+  }
 
-    .actions{
-        grid-template-columns:1fr;
-    }
+  .preview-line{
+    align-items:flex-start
+  }
+
+  .preview-line span{
+    max-width:58%
+  }
 }
 </style>
 </head>
 
 <body>
 
-<div class="app">
+<header class="header">
+  <div class="header-inner">
 
-<header>
-    <div class="top">
-        <div class="menu">☰</div>
+    <div class="brand">
 
+      <div class="brand-mark">✓</div>
+
+      <div>
         <div class="logo">
-            Orça<span>Zap</span>
+          Orça<span>Zap</span>
         </div>
 
-        <div class="company">
-            🏪 Minha Empresa⌄
+        <div style="
+          color:#8195ad;
+          font-size:11px;
+          margin-top:2px
+        ">
+          Orçamentos profissionais pelo celular
         </div>
+      </div>
+
     </div>
 
-    <div class="subtitle">
-        Orçamentos no WhatsApp, de forma simples.
+    <div class="version">
+      V2
     </div>
 
-    <div class="tagline">
-        Mais organização • Mais clientes • Mais vendas
-    </div>
+  </div>
 </header>
 
 
-<section class="stats">
+<main class="container">
 
-    <div class="stat">
-        <div class="icon">💬</div>
-        <div class="number" id="newCount">5</div>
-        <div class="label">Novos</div>
-        <div class="growth">↑ 67%</div>
+  <section class="hero">
+
+    <div class="eyebrow">
+      <span class="dot"></span>
+      simples, rápido e direto
     </div>
 
-    <div class="stat">
-        <div class="icon">🕐</div>
-        <div class="number" id="waitingCount">3</div>
-        <div class="label">Aguardando</div>
-        <div class="growth">↑ 50%</div>
-    </div>
+    <h1>
+      Crie seu orçamento e envie pelo WhatsApp.
+    </h1>
 
-    <div class="stat">
-        <div class="icon">🔔</div>
-        <div class="number" id="reminderCount">2</div>
-        <div class="label">Lembretes</div>
-        <div class="growth">↑ 100%</div>
-    </div>
+    <p>
+      Preencha os dados do cliente e do serviço.
+      O OrçaZap prepara a visualização do orçamento
+      para você enviar.
+    </p>
 
-    <div class="stat">
-        <div class="icon">✓</div>
-        <div class="number" id="closedCount">12</div>
-        <div class="label">Fechados</div>
-        <div class="growth">↑ 33%</div>
-    </div>
-
-</section>
+  </section>
 
 
-<div class="banner">
-    <div class="banner-icon">✨</div>
+  <div class="grid">
 
-    <div>
-        <h3>Seu negócio mais organizado!</h3>
-        <p>
-            Acompanhe seus orçamentos, lembre seus clientes
-            e aumente suas vendas, tudo em um só lugar.
-        </p>
-    </div>
-</div>
+    <section class="card">
 
+      <div class="card-title">
 
-<section class="section">
+        <div>
+          <h2>Dados do cliente</h2>
+          <p>Para quem o orçamento será enviado.</p>
+        </div>
 
-    <div class="section-head">
-        <h2>Seus Orçamentos</h2>
+        <div class="number">
+          01
+        </div>
 
-        <button class="new-btn" onclick="openModal()">
-            + Novo
-        </button>
-    </div>
+      </div>
 
 
-    <div class="search-area">
+      <div class="field">
+
+        <label for="cliente">
+          Nome do cliente
+        </label>
+
         <input
-            class="search"
-            id="search"
-            type="text"
-            placeholder="🔍 Buscar cliente ou serviço..."
-            oninput="searchQuotes()"
+          id="cliente"
+          type="text"
+          placeholder="Ex.: João da Silva"
         >
 
-        <button class="filter" onclick="showFilters()">
-            ⚙
-        </button>
-    </div>
+      </div>
 
 
-    <div class="filters" id="filters">
+      <div class="field">
 
-        <button class="active" onclick="filterQuotes('todos',this)">
-            Todos
-        </button>
-
-        <button onclick="filterQuotes('novo',this)">
-            Novos
-        </button>
-
-        <button onclick="filterQuotes('aguardando',this)">
-            Aguardando
-        </button>
-
-        <button onclick="filterQuotes('lembrete',this)">
-            Lembretes
-        </button>
-
-        <button onclick="filterQuotes('fechado',this)">
-            Fechados
-        </button>
-
-    </div>
-
-
-    <div id="quotes">
-
-        <!-- ANA -->
-
-        <div class="quote" data-status="novo" data-search="ana souza limpeza residencial">
-
-            <div class="quote-top">
-
-                <div class="avatar">🏠</div>
-
-                <div class="quote-info">
-
-                    <div class="client">
-                        Ana Souza
-                    </div>
-
-                    <div class="service">
-                        Limpeza Residencial
-                    </div>
-
-                    <div class="price">
-                        R$ 180,00
-                    </div>
-
-                    <div class="date">
-                        📅 16/09/2026
-                    </div>
-
-                </div>
-
-                <div class="status new">
-                    NOVO
-                </div>
-
-            </div>
-
-            <div class="actions">
-
-                <button
-                    class="action whatsapp"
-                    onclick="openWhatsApp('Ana Souza')">
-                    🟢 Abrir conversa
-                </button>
-
-                <button
-                    class="action remind"
-                    onclick="remind('Ana Souza')">
-                    🔔 Lembrar no WhatsApp
-                </button>
-
-            </div>
-
-        </div>
-
-
-        <!-- CARLOS -->
-
-        <div class="quote" data-status="aguardando" data-search="carlos mendes manutenção ar condicionado">
-
-            <div class="quote-top">
-
-                <div class="avatar">🔧</div>
-
-                <div class="quote-info">
-
-                    <div class="client">
-                        Carlos Mendes
-                    </div>
-
-                    <div class="service">
-                        Manutenção de Ar Condicionado
-                    </div>
-
-                    <div class="price">
-                        R$ 320,00
-                    </div>
-
-                    <div class="date">
-                        📅 15/09/2026
-                    </div>
-
-                </div>
-
-                <div class="status waiting">
-                    AGUARDANDO
-                </div>
-
-            </div>
-
-            <div class="actions">
-
-                <button
-                    class="action whatsapp"
-                    onclick="openWhatsApp('Carlos Mendes')">
-                    🟢 Abrir conversa
-                </button>
-
-                <button
-                    class="action remind"
-                    onclick="remind('Carlos Mendes')">
-                    🔔 Lembrar no WhatsApp
-                </button>
-
-            </div>
-
-        </div>
-
-
-        <!-- JESSICA -->
-
-        <div class="quote" data-status="lembrete" data-search="jessica lima jardinagem">
-
-            <div class="quote-top">
-
-                <div class="avatar">🌿</div>
-
-                <div class="quote-info">
-
-                    <div class="client">
-                        Jessica Lima
-                    </div>
-
-                    <div class="service">
-                        Jardinagem
-                    </div>
-
-                    <div class="price">
-                        R$ 150,00
-                    </div>
-
-                    <div class="date">
-                        📅 12/09/2026
-                    </div>
-
-                </div>
-
-                <div class="status reminder">
-                    LEMBRETE
-                </div>
-
-            </div>
-
-            <div class="actions">
-
-                <button
-                    class="action whatsapp"
-                    onclick="openWhatsApp('Jessica Lima')">
-                    🟢 Abrir conversa
-                </button>
-
-                <button
-                    class="action remind"
-                    onclick="remind('Jessica Lima')">
-                    🔔 Lembrar no WhatsApp
-                </button>
-
-            </div>
-
-        </div>
-
-
-        <!-- EMPRESA -->
-
-        <div class="quote" data-status="fechado" data-search="empresa alpha pintura comercial">
-
-            <div class="quote-top">
-
-                <div class="avatar">🏢</div>
-
-                <div class="quote-info">
-
-                    <div class="client">
-                        Empresa Alpha
-                    </div>
-
-                    <div class="service">
-                        Pintura Comercial
-                    </div>
-
-                    <div class="price">
-                        R$ 2.800,00
-                    </div>
-
-                    <div class="date">
-                        📅 10/09/2026
-                    </div>
-
-                </div>
-
-                <div class="status closed">
-                    FECHADO
-                </div>
-
-            </div>
-
-            <div class="actions">
-
-                <button
-                    class="action whatsapp"
-                    onclick="openWhatsApp('Empresa Alpha')">
-                    🟢 Abrir conversa
-                </button>
-
-                <button
-                    class="action remind"
-                    onclick="details('Empresa Alpha')">
-                    👁 Ver detalhes
-                </button>
-
-            </div>
-
-        </div>
-
-
-        <div class="empty" id="empty">
-            Nenhum orçamento encontrado.
-        </div>
-
-    </div>
-
-</section>
-
-</div>
-
-
-<!-- NAVEGAÇÃO -->
-
-<nav class="bottom-nav">
-
-    <div class="nav-item active" onclick="nav('inicio')">
-        <span>⌂</span>
-        Início
-    </div>
-
-    <div class="nav-item" onclick="nav('orcamentos')">
-        <span>▣</span>
-        Orçamentos
-    </div>
-
-    <div class="nav-item" onclick="nav('lembretes')">
-        <span>♧</span>
-        <b class="badge">2</b>
-        Lembretes
-    </div>
-
-    <div class="nav-item" onclick="nav('config')">
-        <span>⚙</span>
-        Config.
-    </div>
-
-</nav>
-
-
-<!-- MODAL NOVO ORÇAMENTO -->
-
-<div class="modal" id="modal">
-
-    <div class="modal-box">
-
-        <h2>Novo orçamento</h2>
+        <label for="telefone">
+          WhatsApp do cliente
+        </label>
 
         <input
-            class="input"
-            id="clientInput"
-            placeholder="Nome do cliente"
+          id="telefone"
+          type="tel"
+          placeholder="Ex.: 11999999999"
         >
 
+      </div>
+
+    </section>
+
+
+    <section class="card">
+
+      <div class="card-title">
+
+        <div>
+          <h2>Dados do serviço</h2>
+          <p>Detalhes que aparecerão no orçamento.</p>
+        </div>
+
+        <div class="number">
+          02
+        </div>
+
+      </div>
+
+
+      <div class="field">
+
+        <label for="servico">
+          Nome do serviço
+        </label>
+
         <input
-            class="input"
-            id="serviceInput"
-            placeholder="Serviço"
+          id="servico"
+          type="text"
+          placeholder="Ex.: Instalação elétrica"
         >
 
+      </div>
+
+
+      <div class="field">
+
+        <label for="descricao">
+          Descrição
+        </label>
+
+        <textarea
+          id="descricao"
+          placeholder="Descreva o serviço..."
+        ></textarea>
+
+      </div>
+
+
+      <div class="field">
+
+        <label for="valor">
+          Valor (R$)
+        </label>
+
         <input
-            class="input"
-               id="whatsappInput"
-    placeholder="WhatsApp do cliente"
-    type="tel"
->
+          id="valor"
+          type="number"
+          step="0.01"
+          min="0"
+          placeholder="Ex.: 350"
+        >
 
-<input
-    class="input"
-    id="serviceInput"
-    placeholder="Serviço"
->
+      </div>
 
-<input
-    class="input"
-    id="valueInput"
-    placeholder="Valor do orçamento"
-    type="number"
->
 
-<input
-    class="input"
-    id="descriptionInput"
-    placeholder="Descrição do serviço"
->
+      <div class="actions">
 
-<div class="modal-actions">
+        <button
+          class="btn btn-primary"
+          onclick="gerarOrcamento()"
+        >
+          Gerar orçamento
+        </button>
 
-    <button
-        class="cancel"
-        onclick="closeModal()">
-        Cancelar
-    </button>
+      </div>
 
-    <button
-        class="save"
-        onclick="saveQuote()">
-        Gerar orçamento
-    </button>
+    </section>
 
-</div>
 
-</div>
-</div>
+    <section
+      id="resultado"
+      class="card full hidden"
+    >
+
+      <div class="card-title">
+
+        <div>
+          <h2>Seu orçamento</h2>
+          <p>Confira antes de enviar.</p>
+        </div>
+
+        <div class="number">
+          03
+        </div>
+
+      </div>
+
+
+      <div
+        class="preview"
+        id="preview"
+      ></div>
+
+
+      <div class="actions">
+
+        <button
+          class="btn btn-whatsapp"
+          onclick="enviarWhatsApp()"
+        >
+          Enviar pelo WhatsApp
+        </button>
+
+        <button
+          class="btn btn-secondary"
+          onclick="salvarOrcamento()"
+        >
+          Salvar orçamento
+        </button>
+
+      </div>
+
+
+      <div
+        id="status"
+        class="status"
+      ></div>
+
+    </section>
+
+
+    <section class="card full">
+
+      <div class="card-title">
+
+        <div>
+          <h2>Orçamentos salvos</h2>
+          <p>Ficam armazenados neste aparelho.</p>
+        </div>
+
+        <div class="number">
+          04
+        </div>
+
+      </div>
+
+
+      <div
+        id="lista"
+        class="saved-list"
+      ></div>
+
+
+      <div class="tip">
+
+        <strong>Privacidade:</strong>
+        os orçamentos salvos nesta versão continuam usando
+        o armazenamento local do navegador, como no V1.
+
+      </div>
+
+    </section>
+
+  </div>
+
+</main>
+
+
+<footer>
+  OrçaZap • Seu orçamento, direto no WhatsApp.
+</footer>
 
 
 <script>
 
-let quotesData = [];
+let orçamentoAtual = null;
 
 
-/* =========================
-   MODAL
-========================= */
+function dinheiro(valor) {
 
-function openModal(){
-
-    document.getElementById("modal").classList.add("show");
-
-}
-
-function closeModal(){
-
-    document.getElementById("modal").classList.remove("show");
+  return Number(valor || 0).toLocaleString(
+    "pt-BR",
+    {
+      style: "currency",
+      currency: "BRL"
+    }
+  );
 
 }
 
 
-/* =========================
-   NOVO ORÇAMENTO
-========================= */
+function escapar(texto) {
 
-function saveQuote(){
+  return String(texto)
 
-    const client =
-        document.getElementById("clientInput").value.trim();
-
-    const whatsapp =
-        document.getElementById("whatsappInput").value.trim();
-
-    const service =
-        document.getElementById("serviceInput").value.trim();
-
-    const value =
-        document.getElementById("valueInput").value.trim();
-
-    const description =
-        document.getElementById("descriptionInput").value.trim();
-
-
-    if(!client || !service || !value){
-
-        alert("Preencha o nome do cliente, serviço e valor.");
-
-        return;
-
-    }
-
-
-    const number =
-        "#ORC-" +
-        String(Date.now()).slice(-6);
-
-
-    const quote = {
-
-        id:number,
-
-        client:client,
-
-        whatsapp:whatsapp,
-
-        service:service,
-
-        value:value,
-
-        description:description,
-
-        status:"novo",
-
-        date:new Date().toLocaleDateString("pt-BR")
-
-    };
-
-
-    quotesData.push(quote);
-
-
-    try{
-
-        localStorage.setItem(
-            "orcazap_quotes",
-            JSON.stringify(quotesData)
-        );
-
-    }catch(e){}
-
-
-    closeModal();
-
-
-    showQuoteScreen(quote);
-
-
-    updateCounters();
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
 
 }
 
 
-/* =========================
-   CARREGAR DADOS
-========================= */
+function gerarOrcamento() {
 
-function loadQuotes(){
-
-    try{
-
-        const saved =
-            localStorage.getItem("orcazap_quotes");
-
-        if(saved){
-
-            quotesData = JSON.parse(saved);
-
-        }
-
-    }catch(e){
-
-        quotesData = [];
-
-    }
-
-}
-
-
-loadQuotes();
-
-
-/* =========================
-   WHATSAPP
-========================= */
-
-function cleanPhone(phone){
-
-    return String(phone || "")
-        .replace(/\D/g,"");
-
-}
-
-
-function openWhatsApp(name){
-
-    let phone = "";
-
-
-    const quote =
-        quotesData.find(q => q.client === name);
-
-    if(quote){
-
-        phone = cleanPhone(quote.whatsapp);
-
-    }
-
-
-    if(!phone){
-
-        phone = prompt(
-            "Digite o número do WhatsApp de " +
-            name +
-            " com DDD:"
-        );
-
-    }
-
-
-    phone = cleanPhone(phone);
-
-
-    if(!phone){
-
-        alert("Número de WhatsApp não informado.");
-
-        return;
-
-    }
-
-
-    if(phone.length <= 11){
-
-        phone = "55" + phone;
-
-    }
-
-
-    const message =
-        "Olá " +
-        name +
-        "! Tudo bem? " +
-        "Estou entrando em contato sobre o seu orçamento pelo OrçaZap.";
-
-
-    const url =
-        "https://wa.me/" +
-        phone +
-        "?text=" +
-        encodeURIComponent(message);
-
-
-    window.open(url,"_blank");
-
-}
-
-
-/* =========================
-   LEMBRETE
-========================= */
-
-function remind(name){
-
-    let phone = "";
-
-
-    const quote =
-        quotesData.find(q => q.client === name);
-
-    if(quote){
-
-        phone = cleanPhone(quote.whatsapp);
-
-    }
-
-
-    if(!phone){
-
-        phone = prompt(
-            "Digite o número do WhatsApp de " +
-            name +
-            " com DDD:"
-        );
-
-    }
-
-
-    phone = cleanPhone(phone);
-
-
-    if(!phone){
-
-        alert("Número de WhatsApp não informado.");
-
-        return;
-
-    }
-
-
-    if(phone.length <= 11){
-
-        phone = "55" + phone;
-
-    }
-
-
-    const message =
-        "Olá " +
-        name +
-        "! 👋\n\n" +
-        "Passando para lembrar sobre o orçamento " +
-        "que enviamos anteriormente.\n\n" +
-        "Se tiver alguma dúvida, estou à disposição. 😊";
-
-
-    const url =
-        "https://wa.me/" +
-        phone +
-        "?text=" +
-        encodeURIComponent(message);
-
-
-    window.open(url,"_blank");
-
-}
-
-
-/* =========================
-   FILTROS
-========================= */
-
-function filterQuotes(status,button){
-
-    const cards =
-        document.querySelectorAll(".quote");
-
-
-    cards.forEach(card => {
-
-        if(status === "todos"){
-
-            card.style.display = "";
-
-        }else{
-
-            card.style.display =
-                card.dataset.status === status
-                ? ""
-                : "none";
-
-        }
-
-    });
-
-
+  const cliente =
     document
-        .querySelectorAll(".filters button")
-        .forEach(btn => btn.classList.remove("active"));
+      .getElementById("cliente")
+      .value
+      .trim();
 
+  const telefone =
+    document
+      .getElementById("telefone")
+      .value
+      .trim();
 
-    if(button){
+  const servico =
+    document
+      .getElementById("servico")
+      .value
+      .trim();
 
-        button.classList.add("active");
+  const descricao =
+    document
+      .getElementById("descricao")
+      .value
+      .trim();
 
-    }
+  const valor =
+    document
+      .getElementById("valor")
+      .value;
 
 
-    checkEmpty();
+  if (!cliente) {
 
-}
+    alert("Digite o nome do cliente.");
 
+    return;
+  }
 
-function searchQuotes(){
 
-    const search =
-        document
-            .getElementById("search")
-            .value
-            .toLowerCase()
-            .trim();
+  if (!servico) {
 
+    alert("Digite o nome do serviço.");
 
-    const cards =
-        document.querySelectorAll(".quote");
+    return;
+  }
 
 
-    cards.forEach(card => {
+  if (!valor || Number(valor) <= 0) {
 
-        const text =
-            card.dataset.search || "";
+    alert("Digite um valor válido.");
 
-        card.style.display =
-            text.includes(search)
-            ? ""
-            : "none";
+    return;
+  }
 
-    });
 
+  orçamentoAtual = {
 
-    checkEmpty();
+    cliente,
+    telefone,
+    servico,
+    descricao,
+    valor: Number(valor),
+    data: new Date()
+      .toLocaleDateString("pt-BR")
 
-}
+  };
 
 
-function checkEmpty(){
+  document
+    .getElementById("preview")
+    .innerHTML = `
 
-    const cards =
-        [...document.querySelectorAll(".quote")];
+      <div class="preview-head">
 
-    const visible =
-        cards.some(card =>
-            card.style.display !== "none"
-        );
+        <div>
 
+          <h3>
+            Orçamento
+          </h3>
 
-    const empty =
-        document.getElementById("empty");
-
-
-    if(empty){
-
-        empty.style.display =
-            visible ? "none" : "block";
-
-    }
-
-}
-
-
-/* =========================
-   FILTRO EXTRA
-========================= */
-
-function showFilters(){
-
-    const filters =
-        document.getElementById("filters");
-
-
-    if(filters){
-
-        filters.scrollIntoView({
-
-            behavior:"smooth",
-
-            block:"center"
-
-        });
-
-    }
-
-}
-
-
-/* =========================
-   DETALHES
-========================= */
-
-function details(name){
-
-    let quote =
-        quotesData.find(q => q.client === name);
-
-
-    if(!quote){
-
-        quote = {
-
-            id:"#ORC-001",
-
-            client:name,
-
-            service:"Pintura Comercial",
-
-            value:"2800",
-
-            description:
-                "Orçamento cadastrado no sistema.",
-
-            status:"fechado",
-
-            date:"10/09/2026"
-
-        };
-
-    }
-
-
-    showQuoteScreen(quote);
-
-}
-
-
-/* =========================
-   TELA DE ORÇAMENTO
-========================= */
-
-function showQuoteScreen(quote){
-
-    let screen =
-        document.getElementById("dynamicScreen");
-
-
-    if(!screen){
-
-        screen =
-            document.createElement("div");
-
-        screen.id = "dynamicScreen";
-
-        screen.style.cssText = `
-            position:fixed;
-            inset:0;
-            z-index:200;
-            background:#030914;
-            color:#f4f7ff;
-            overflow-y:auto;
-        `;
-
-        document.body.appendChild(screen);
-
-    }
-
-
-    screen.innerHTML = `
-
-        <div style="
-            max-width:520px;
-            min-height:100vh;
-            margin:auto;
-            padding:20px 16px 100px;
-            background:
-            radial-gradient(
-                circle at 80% 0%,
-                rgba(0,180,255,.12),
-                transparent 28%
-            ),
-            #06101e;
-        ">
-
-            <div style="
-                display:flex;
-                align-items:center;
-                gap:12px;
-                margin-bottom:25px;
-            ">
-
-                <button
-                    onclick="closeDynamicScreen()"
-                    style="
-                    width:42px;
-                    height:42px;
-                    border-radius:13px;
-                    border:1px solid #294969;
-                    background:#0b192b;
-                    color:white;
-                    font-size:20px;
-                    ">
-                    ←
-                </button>
-
-                <h2>
-                    Orçamento
-                </h2>
-
-            </div>
-
-
-            <div style="
-                border:1px solid #21476d;
-                background:linear-gradient(
-                    145deg,
-                    #0c1d32,
-                    #081321
-                );
-                border-radius:20px;
-                padding:20px;
-            ">
-
-                <div style="
-                    color:#00e6a8;
-                    font-size:12px;
-                    margin-bottom:8px;
-                ">
-                    ${quote.id || "#ORC-001"}
-                </div>
-
-
-                <h2 style="margin-bottom:8px;">
-                    ${quote.client}
-                </h2>
-
-
-                <div style="
-                    color:#9eb6d5;
-                    margin-bottom:20px;
-                ">
-                    ${quote.service}
-                </div>
-
-
-                <div style="
-                    border-top:1px solid #213b59;
-                    padding-top:16px;
-                    margin-top:10px;
-                ">
-
-                    <div style="
-                        color:#8198b4;
-                        font-size:12px;
-                    ">
-                        VALOR
-                    </div>
-
-                    <div style="
-                        font-size:30px;
-                        font-weight:800;
-                        margin-top:5px;
-                    ">
-                        R$ ${formatMoney(quote.value)}
-                    </div>
-
-                </div>
-
-
-                <div style="
-                    margin-top:20px;
-                    color:#a9bdd6;
-                    line-height:1.5;
-                    font-size:14px;
-                ">
-                    ${quote.description || "Sem descrição adicional."}
-                </div>
-
-
-                <div style="
-                    margin-top:20px;
-                    color:#748aa5;
-                    font-size:12px;
-                ">
-                    📅 ${quote.date || ""}
-                </div>
-
-            </div>
-
-
-            <button
-                onclick="openWhatsApp('${escapeQuote(quote.client)}')"
-                style="
-                width:100%;
-                margin-top:18px;
-                padding:15px;
-                border:0;
-                border-radius:13px;
-                background:#00d99e;
-                color:#001b13;
-                font-weight:800;
-                font-size:15px;
-                ">
-                🟢 Enviar pelo WhatsApp
-            </button>
-
-
-            <button
-                onclick="printQuote()"
-                style="
-                width:100%;
-                margin-top:10px;
-                padding:15px;
-                border:1px solid #285077;
-                border-radius:13px;
-                background:#091827;
-                color:#d3e2f5;
-                font-weight:800;
-                font-size:15px;
-                ">
-                📄 Baixar / Salvar PDF
-            </button>
+          <small>
+            OrçaZap
+          </small>
 
         </div>
+
+        <small>
+          ${escapar(orçamentoAtual.data)}
+        </small>
+
+      </div>
+
+
+      <div class="preview-line">
+
+        <strong>
+          Cliente
+        </strong>
+
+        <span>
+          ${escapar(cliente)}
+        </span>
+
+      </div>
+
+
+      <div class="preview-line">
+
+        <strong>
+          Serviço
+        </strong>
+
+        <span>
+          ${escapar(servico)}
+        </span>
+
+      </div>
+
+
+      <div class="preview-line">
+
+        <strong>
+          Descrição
+        </strong>
+
+        <span>
+          ${escapar(
+            descricao || "Não informada"
+          )}
+        </span>
+
+      </div>
+
+
+      <div class="preview-total">
+
+        <span>
+          Total
+        </span>
+
+        <span>
+          ${dinheiro(valor)}
+        </span>
+
+      </div>
+
     `;
 
 
-    screen.style.display = "block";
+  document
+    .getElementById("resultado")
+    .classList
+    .remove("hidden");
+
+
+  document
+    .getElementById("status")
+    .textContent = "";
+
+
+  document
+    .getElementById("resultado")
+    .scrollIntoView({
+      behavior:"smooth",
+      block:"start"
+    });
 
 }
 
 
-function closeDynamicScreen(){
+function enviarWhatsApp() {
 
-    const screen =
-        document.getElementById("dynamicScreen");
+  if (!orçamentoAtual) {
 
-
-    if(screen){
-
-        screen.style.display = "none";
-
-    }
-
-}
-
-
-function escapeQuote(text){
-
-    return String(text || "")
-        .replace(/'/g,"\\'");
-
-}
-
-
-function formatMoney(value){
-
-    const number =
-        Number(
-            String(value)
-                .replace(",",".")
-        ) || 0;
-
-
-    return number.toLocaleString(
-        "pt-BR",
-        {
-            minimumFractionDigits:2,
-            maximumFractionDigits:2
-        }
+    alert(
+      "Gere um orçamento primeiro."
     );
 
-}
+    return;
+  }
 
 
-/* =========================
-   PDF
-========================= */
-
-function printQuote(){
-
-    window.print();
-
-}
+  let telefone =
+    orçamentoAtual.telefone
+      .replace(/\D/g, "");
 
 
-/* =========================
-   NAVEGAÇÃO
-========================= */
+  if (
+    telefone.length === 11 ||
+    telefone.length === 10
+  ) {
 
-function nav(page){
+    telefone = "55" + telefone;
 
-    document
-        .querySelectorAll(".nav-item")
-        .forEach(item => {
-
-            item.classList.remove("active");
-
-        });
+  }
 
 
-    const items =
-        document.querySelectorAll(".nav-item");
+  const mensagem =
+
+`Olá, ${orçamentoAtual.cliente}! 👋
+
+Segue seu orçamento:
+
+📋 Serviço: ${orçamentoAtual.servico}
+
+📝 Descrição:
+${orçamentoAtual.descricao || "Não informada"}
+
+💰 Valor: ${dinheiro(orçamentoAtual.valor)}
+
+📅 Data: ${orçamentoAtual.data}
+
+Obrigado pela preferência!`;
 
 
-    if(page === "inicio"){
-
-        if(items[0])
-            items[0].classList.add("active");
-
-        closeDynamicScreen();
-
-        window.scrollTo({
-
-            top:0,
-
-            behavior:"smooth"
-
-        });
-
-        return;
-
-    }
+  const texto =
+    encodeURIComponent(mensagem);
 
 
-    if(page === "orcamentos"){
+  const url =
+    telefone.length >= 12
 
-        if(items[1])
-            items[1].classList.add("active");
+      ? "https://wa.me/" +
+        telefone +
+        "?text=" +
+        texto
 
-        showHistory();
-
-        return;
-
-    }
-
-
-    if(page === "lembretes"){
-
-        if(items[2])
-            items[2].classList.add("active");
-
-        showReminders();
-
-        return;
-
-    }
+      : "https://wa.me/?text=" +
+        texto;
 
 
-    if(page === "config"){
-
-        if(items[3])
-            items[3].classList.add("active");
-
-        showConfig();
-
-        return;
-
-    }
+  window.open(
+    url,
+    "_blank"
+  );
 
 }
 
 
-/* =========================
-   HISTÓRICO
-========================= */
+function salvarOrcamento() {
 
-function showHistory(){
+  if (!orçamentoAtual) {
 
-    let screen =
-        document.getElementById("dynamicScreen");
+    alert(
+      "Gere um orçamento primeiro."
+    );
 
-
-    if(!screen){
-
-        screen =
-            document.createElement("div");
-
-        screen.id="dynamicScreen";
-
-        screen.style.cssText=`
-            position:fixed;
-            inset:0;
-            z-index:200;
-            background:#030914;
-            overflow-y:auto;
-        `;
-
-        document.body.appendChild(screen);
-
-    }
+    return;
+  }
 
 
-    let savedQuotes = quotesData;
+  let lista =
+    JSON.parse(
+      localStorage.getItem(
+        "orcazap_orcamentos"
+      ) || "[]"
+    );
 
 
-    screen.innerHTML=`
-
-        <div style="
-            max-width:520px;
-            min-height:100vh;
-            margin:auto;
-            padding:22px 16px 100px;
-            color:#fff;
-            background:#06101e;
-        ">
-
-            <button
-                onclick="nav('inicio')"
-                style="
-                width:42px;
-                height:42px;
-                border-radius:13px;
-                border:1px solid #294969;
-                background:#0b192b;
-                color:white;
-                font-size:20px;
-                ">
-                ←
-            </button>
-
-            <h2 style="margin-top:20px;">
-                📋 Seus Orçamentos
-            </h2>
-
-            <p style="
-                color:#8da5c0;
-                margin-top:6px;
-                margin-bottom:20px;
-            ">
-                Histórico dos seus orçamentos.
-            </p>
+  lista.unshift(
+    orçamentoAtual
+  );
 
 
-            ${
-                savedQuotes.length
-                ?
-                savedQuotes.map(q => `
-
-                    <div style="
-                        border:1px solid #213b59;
-                        background:#0a192b;
-                        border-radius:17px;
-                        padding:16px;
-                        margin-bottom:12px;
-                    ">
-
-                        <strong>
-                            ${q.client}
-                        </strong>
-
-                        <div style="
-                            color:#91a8c2;
-                            font-size:12px;
-                            margin-top:5px;
-                        ">
-                            ${q.service}
-                        </div>
-
-                        <div style="
-                            font-size:18px;
-                            font-weight:800;
-                            margin-top:8px;
-                        ">
-                            R$ ${formatMoney(q.value)}
-                        </div>
-
-                        <button
-                            onclick="showQuoteScreenById('${q.id}')"
-                            style="
-                            margin-top:12px;
-                            padding:10px 14px;
-                            border-radius:10px;
-                            border:1px solid #1769ad;
-                            background:#08192c;
-                            color:#c2d5ee;
-                            ">
-                            Ver orçamento
-                        </button>
-
-                    </div>
-
-                `).join("")
-                :
-                `
-                    <div style="
-                        text-align:center;
-                        color:#7890ad;
-                        padding:40px 10px;
-                    ">
-                        Nenhum orçamento criado ainda.
-                    </div>
-                `
-            }
-
-        </div>
-    `;
+  localStorage.setItem(
+    "orcazap_orcamentos",
+    JSON.stringify(lista)
+  );
 
 
-    screen.style.display="block";
+  document
+    .getElementById("status")
+    .textContent =
+      "✓ Orçamento salvo neste aparelho.";
+
+
+  mostrarLista();
 
 }
 
 
-function showQuoteScreenById(id){
+function mostrarLista() {
 
-    const quote =
-        quotesData.find(q => q.id === id);
-
-
-    if(quote){
-
-        showQuoteScreen(quote);
-
-    }
-
-}
+  const lista =
+    JSON.parse(
+      localStorage.getItem(
+        "orcazap_orcamentos"
+      ) || "[]"
+    );
 
 
-/* =========================
-   LEMBRETES
-========================= */
-
-function showReminders(){
-
-    let screen =
-        document.getElementById("dynamicScreen");
+  const elemento =
+    document.getElementById(
+      "lista"
+    );
 
 
-    if(!screen){
+  if (lista.length === 0) {
 
-        screen=document.createElement("div");
+    elemento.innerHTML =
+      '<div class="empty">' +
+      'Nenhum orçamento salvo ainda.' +
+      '</div>';
 
-        screen.id="dynamicScreen";
-
-        screen.style.cssText=`
-            position:fixed;
-            inset:0;
-            z-index:200;
-            background:#030914;
-            overflow-y:auto;
-        `;
-
-        document.body.appendChild(screen);
-
-    }
+    return;
+  }
 
 
-    screen.innerHTML=`
+  elemento.innerHTML =
+    lista.map(
+      (item,index) => `
 
-        <div style="
-            max-width:520px;
-            min-height:100vh;
-            margin:auto;
-            padding:22px 16px 100px;
-            color:#fff;
-            background:#06101e;
-        ">
+        <div class="saved-item">
 
-            <button
-                onclick="nav('inicio')"
-                style="
-                width:42px;
-                height:42px;
-                border-radius:13px;
-                border:1px solid #294969;
-                background:#0b192b;
-                color:white;
-                font-size:20px;
-                ">
-                ←
-            </button>
+          <div class="saved-top">
 
-            <h2 style="margin-top:20px;">
-                🔔 Lembretes
-            </h2>
+            <div>
 
-            <p style="
-                color:#8da5c0;
-                margin-top:6px;
-            ">
-                Clientes que precisam de acompanhamento.
-            </p>
+              <div class="saved-name">
+                ${escapar(item.cliente)}
+              </div>
 
-
-            <div style="
-                margin-top:20px;
-                border:1px solid #6537a2;
-                background:#0d182b;
-                border-radius:17px;
-                padding:18px;
-            ">
-
-                <strong>
-                    2 lembretes pendentes
-                </strong>
-
-                <p style="
-                    color:#91a8c2;
-                    font-size:13px;
-                    margin-top:8px;
-                    line-height:1.5;
-                ">
-                    Use o WhatsApp para entrar em contato
-                    novamente com seus clientes.
-                </p>
+              <div class="saved-service">
+                ${escapar(item.servico)}
+              </div>
 
             </div>
 
+            <div class="saved-value">
+              ${dinheiro(item.valor)}
+            </div>
+
+          </div>
+
+
+          <div class="saved-bottom">
+
+            <span class="saved-date">
+              ${escapar(item.data)}
+            </span>
+
+          </div>
+
+
+          <button
+            class="btn btn-danger"
+            onclick="excluirOrcamento(${index})"
+          >
+            Excluir
+          </button>
+
         </div>
-    `;
 
-
-    screen.style.display="block";
+      `
+    ).join("");
 
 }
 
 
-/* =========================
-   CONFIGURAÇÕES
-========================= */
+function excluirOrcamento(index) {
 
-function showConfig(){
-
-    let screen =
-        document.getElementById("dynamicScreen");
-
-
-    if(!screen){
-
-        screen=document.createElement("div");
-
-        screen.id="dynamicScreen";
-
-        screen.style.cssText=`
-            position:fixed;
-            inset:0;
-            z-index:200;
-            background:#030914;
-            overflow-y:auto;
-        `;
-
-        document.body.appendChild(screen);
-
-    }
+  let lista =
+    JSON.parse(
+      localStorage.getItem(
+        "orcazap_orcamentos"
+      ) || "[]"
+    );
 
 
-    screen.innerHTML=`
-
-        <div style="
-            max-width:520px;
-            min-height:100vh;
-            margin:auto;
-            padding:22px 16px 100px;
-            color:#fff;
-            background:#06101e;
-        ">
-
-            <button
-                onclick="nav('inicio')"
-                style="
-                width:42px;
-                height:42px;
-                border-radius:13px;
-                border:1px solid #294969;
-                background:#0b192b;
-                color:white;
-                font-size:20px;
-                ">
-                ←
-            </button>
-
-            <h2 style="margin-top:20px;">
-                ⚙ Configurações
-            </h2>
+  lista.splice(
+    index,
+    1
+  );
 
 
-            <div style="
-                margin-top:20px;
-                border:1px solid #21476d;
-                background:#0a192b;
-                border-radius:17px;
-                padding:18px;
-            ">
+  localStorage.setItem(
+    "orcazap_orcamentos",
+    JSON.stringify(lista)
+  );
 
-                <strong>
-                    🏪 Minha Empresa
-                </strong>
 
-                <p style="
-                    color:#91a8c2;
-                    margin-top:8px;
-                    font-size:13px;
-                ">
-                    Configure os dados que aparecerão
-                    nos seus orçamentos.
+  mostrarLista();
+
+}
+
+
+mostrarLista();
+
+</script>
+
+</body>
+</html>
